@@ -35,13 +35,21 @@ class Vote < ActiveRecord::Base
     nil
   end
 
-  def self.move_user_vote_to_proposal(proposal, user, vote_attributes)
-    if vote = find_related_vote_in_tree_for_user(proposal, user)
+  def self.move_user_vote_to_proposal(target_proposal, user, vote_attributes)
+    if vote = find_related_vote_in_tree_for_user(target_proposal, user)
       vote.ip_address = vote_attributes[:ip_address]
       vote.comment = vote_attributes[:comment]
-      vote.proposal = proposal
+      vote.proposal = target_proposal
+      #target_proposal.update_status
+      target_proposal.update_parent_status
+      puts '----------'
+      puts target_proposal.parent.votes_count
+      puts '----------'
+      puts target_proposal.votes_count
+      puts '----------'
+
     else
-      vote = user.votes.build({ proposal: proposal }.merge(vote_attributes))
+      vote = user.votes.build({ proposal: target_proposal }.merge(vote_attributes))
     end
     status = vote.save
     return status, vote

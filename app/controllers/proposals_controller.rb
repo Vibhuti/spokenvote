@@ -219,11 +219,11 @@ private
         @sortTitle = @proposals.first.user.username + "'s "
       end
     elsif user_signed_in?
-      session[:search_hub] = nil      
+      session[:search_hub] = nil
       @proposals = current_user.proposals.roots
       @sortTitle = (current_user.name || current_user.username) + "'s "
     else
-      session[:search_hub] = nil      
+      session[:search_hub] = nil
       @proposals = Proposal.roots
     end
 

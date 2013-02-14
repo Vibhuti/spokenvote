@@ -1,6 +1,6 @@
 - first_class = (@isXhr or vote_counter > 0) ? 'last' : 'first'
 .row.support_row{class: first_class}
-  .proposal-person.span3{data: {vote_number: vote_counter+1}}
+  .proposal-person.span3{data: {vote_number:  vote_counter+1}}
     = render :partial => 'user_avatar', locals: { user: vote.user, created_at: vote.created_at, vote_counter: vote_counter }
 
   .support_comment.span8

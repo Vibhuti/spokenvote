@@ -12,7 +12,9 @@
 .proposal_container{data: {proposal_id: proposal.id, hub_id: proposal.hub.id}}
   .main-proposal
     .proposal_statement
-      %h3= proposal.statement
+      %h3= proposal.statement if proposal.status != 'archive'
+      = proposal.votes_count
+      = proposal.status
     .proposal-person.span3{data: {vote_number: 1}}
       = render :partial => 'user_avatar', locals: { user: proposal.user, created_at: proposal.created_at }
 

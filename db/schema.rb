@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130206054900) do
+ActiveRecord::Schema.define(:version => 20130212223650) do
 
   create_table "authentications", :force => true do |t|
     t.integer  "user_id"
@@ -42,6 +42,7 @@ ActiveRecord::Schema.define(:version => 20130206054900) do
     t.string   "ancestry"
     t.integer  "created_by"
     t.integer  "hub_id"
+    t.string   "status"
   end
 
   add_index "proposals", ["ancestry"], :name => "index_positions_on_ancestry"

@@ -9,8 +9,9 @@
 #  updated_at  :datetime         not null
 #  votes_count :integer          default(0)
 #  ancestry    :string(255)
-#  created_by  :integer          # Not being used, should be deleted. We are using user_id instead.
+#  created_by  :integer
 #  hub_id      :integer
+#  status      :string(255)
 #
 
 class Proposal < ActiveRecord::Base
@@ -60,5 +61,23 @@ class Proposal < ActiveRecord::Base
   
   def editable?(current_user)
     current_user && votes_count < 2 && user_id == current_user.id
+  end
+
+  def update_status
+    if self.votes_count == 0
+      self.status = 'archive'
+    else
+      self.status = 'active'
+    end
+    self.save
+  end
+
+  def update_parent_status
+    if self.parent.votes_count == 0
+      self.parent.status = 'archive'
+    else
+      self.parent.status = 'active'
+    end
+    self.save
   end
 end

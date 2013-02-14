@@ -13,9 +13,9 @@ describe ProposalsController do
     describe 'with valid parameters' do
       let(:valid_attributes) do
         {
-          :statement => Faker::Lorem.sentence,
-          :hub => hub.attributes,
-          :votes_attributes => {"0" => attributes_for(:vote)}
+            :statement => Faker::Lorem.sentence,
+            :hub => hub.attributes,
+            :votes_attributes => {"0" => attributes_for(:vote)}
         }
       end
 
@@ -47,8 +47,8 @@ describe ProposalsController do
     describe 'with invalid parameters' do
       let(:invalid_attributes) do
         {
-          :hub => hub.attributes,
-          :votes_attributes => {"0" => attributes_for(:vote)}
+            :hub => hub.attributes,
+            :votes_attributes => {"0" => attributes_for(:vote)}
         }
       end
 
@@ -116,6 +116,43 @@ describe ProposalsController do
           expect {
             post :create, :proposal => valid_attributes
           }.to change(Vote, :count).by(0)
+        end
+      end
+
+      context 'allows user to move last vote of the proposal' do
+        let!(:proposal1) { create(:proposal, user: current_user, hub: hub) }
+        let!(:vote1) { create(:vote, user: current_user, proposal: proposal1) }
+        let(:user1) { create(:user) }
+        let!(:proposal2) { create(:proposal, user: user1, hub: hub, statement: 'Proposal-1 --> Proposal-2', parent: proposal1) }
+        let!(:vote2) { create(:vote, user: current_user, proposal: proposal2) }
+
+        #proposal1.votes_count.should == 0 and proposal1.status.should == 'archive'
+        let(:valid_attributes) { attributes_for(:proposal, user_id: user1, parent_id: proposal1.id, votes_attributes: attributes_for(:vote)) }
+
+
+        it 'changes the proposal vote counts to zero' do
+          expect {
+            post :create, :proposal => valid_attributes
+          }.to change(proposal1.votes, :count).to(0)
+        end
+
+        it 'sets the new proposal status to new' do
+          post :create, proposal: valid_attributes
+          #assigns(:proposal).status.should == 'new'
+          proposal1.status.should == 'archive'
+        end
+
+        it 'sets the improve proposal status to active' do
+          post :create, proposal: valid_attributes
+          #assigns(:proposal).status.should == 'active'
+          proposal1.status.should == 'archive'
+        end
+
+
+        it "sets the proposal's status to archive" do
+          post :create, proposal: valid_attributes
+          #assigns(:proposal).status.should == 'active'
+          proposal1.status.should == 'archive'
         end
       end
     end

@@ -11,6 +11,7 @@
 #  ancestry    :string(255)
 #  created_by  :integer
 #  hub_id      :integer
+#  status      :string(255)
 #
 
 require 'spec_helper'
